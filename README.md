@@ -15,8 +15,14 @@
 
 🔔 **Update Notifications**: An automatic update checker can be configured to notify you in the console or directly in-game (or both) when a new version is available. It can be easily toggled on/off in the configuration
 
-
 **So what are you waiting for? Get Better Bouncy Blocks now and bring a new layer of excitement to your server!**
+
+## **📥 Downloads:**
+Modrinth: https://modrinth.com/plugin/betterbouncyblocks
+
+Curseforge: https://www.curseforge.com/minecraft/bukkit-plugins/bbb-better-bouncy-blocks
+
+Spigot: https://www.spigotmc.org/resources/bbb-better-bouncy-blocks.134059/
 
 ## ️**🛡️ Commands & Permissions:**
 `/bbb reload` | `betterbouncyblocks.reload`
