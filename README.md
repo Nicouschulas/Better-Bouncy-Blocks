@@ -38,6 +38,7 @@ Spigot: https://www.spigotmc.org/resources/bbb-better-bouncy-blocks.134059/
 - config updater
 - minimessage support
 - multiple blocks to choose from (not only one)
+- folia support
 
 ## **❓ Q&A:**
 **Why is the compiled plugin (JAR file) larger than the source code on GitHub?**
