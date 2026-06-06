@@ -14,7 +14,7 @@
 
 🛡️ **Integrated Fall Damage Protection**: BetterBouncyBlocks automatically protects players from fall damage after a bounce for a customizable duration
 
-💬 **Customizable Messages**: Tailor nearly all plugin messages to match your server's style
+💬 **Customizable Messages**: Tailor nearly all plugin messages to match your server's style. You can use both modern MiniMessage tags and legacy color codes at the same time!
 
 🔔 **Update Notifications**: An automatic update checker can be configured to notify you in the console or directly in-game (or both) when a new version is available. It can be easily toggled on/off in the configuration
 
@@ -36,7 +36,6 @@ Spigot: https://www.spigotmc.org/resources/bbb-better-bouncy-blocks.134059/
 
 ## **📆 Planned features:**
 - config updater
-- minimessage support
 - multiple blocks to choose from (not only one)
 - folia support
 
