@@ -3,7 +3,7 @@ package de.nicouschulas.betterbouncyblocks;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -24,7 +24,8 @@ import java.util.logging.Level;
 public final class BetterBouncyBlocks extends JavaPlugin implements Listener {
 
     private Component chatPrefix;
-    private final LegacyComponentSerializer legacySerializer = LegacyComponentSerializer.builder().character('&').hexColors().build();
+    private final MiniMessage miniMessage = MiniMessage.miniMessage();
+
     private String latestVersion = null;
 
     @Override
@@ -62,12 +63,44 @@ public final class BetterBouncyBlocks extends JavaPlugin implements Listener {
 
     private void loadPrefix() {
         String rawPrefix = getConfig().getString("prefix", "&7[&cBBB&7] ");
-        this.chatPrefix = legacySerializer.deserialize(rawPrefix);
+        this.chatPrefix = parse(rawPrefix);
     }
 
     public Component getFormattedMessage(String messageKey) {
         String message = getConfig().getString("messages." + messageKey, "Message not found: " + messageKey);
-        return chatPrefix.append(legacySerializer.deserialize(message));
+        return this.chatPrefix.append(parse(message));
+    }
+
+    public Component parse(String input) {
+        if (input == null) return Component.empty();
+
+        String prepared = input
+                .replace("&0", "<black>")
+                .replace("&1", "<dark_blue>")
+                .replace("&2", "<dark_green>")
+                .replace("&3", "<dark_aqua>")
+                .replace("&4", "<dark_red>")
+                .replace("&5", "<dark_purple>")
+                .replace("&6", "<gold>")
+                .replace("&7", "<gray>")
+                .replace("&8", "<dark_gray>")
+                .replace("&9", "<blue>")
+                .replace("&a", "<green>")
+                .replace("&b", "<aqua>")
+                .replace("&c", "<red>")
+                .replace("&d", "<light_purple>")
+                .replace("&e", "<yellow>")
+                .replace("&f", "<white>")
+                .replace("&r", "<reset>")
+                .replace("&l", "<bold>")
+                .replace("&o", "<italic>")
+                .replace("&n", "<underlined>")
+                .replace("&m", "<strikethrough>")
+                .replace("&k", "<obfuscated>");
+
+        prepared = prepared.replaceAll("&#([A-Fa-f0-9]{6})", "<#$1>");
+
+        return miniMessage.deserialize(prepared);
     }
 
     private void checkForUpdates() {
@@ -117,14 +150,14 @@ public final class BetterBouncyBlocks extends JavaPlugin implements Listener {
 
         if (this.latestVersion != null) {
             Player player = event.getPlayer();
-            if ((notifyMethod.equals("player") || notifyMethod.equals("both")) && player.hasPermission("betterbouncyblocks.update")) {
+            if ((notifyMethod.equalsIgnoreCase("player") || notifyMethod.equalsIgnoreCase("both")) && player.hasPermission("betterbouncyblocks.update")) {
 
-                Component textComponent = legacySerializer.deserialize("&aA new version of Better Bouncy Blocks is available: " + this.latestVersion + " ");
+                Component textComponent = parse("&aA new version of Better Bouncy Blocks is available: " + this.latestVersion + " ");
 
                 Component linkComponent = Component.text("Click to download it at Modrinth", NamedTextColor.GRAY)
                         .clickEvent(ClickEvent.openUrl("https://modrinth.com/project/betterbouncyblocks/versions"));
 
-                Component updateMessage = chatPrefix.append(textComponent).append(linkComponent);
+                Component updateMessage = this.chatPrefix.append(textComponent).append(linkComponent);
                 player.sendMessage(updateMessage);
             }
         }

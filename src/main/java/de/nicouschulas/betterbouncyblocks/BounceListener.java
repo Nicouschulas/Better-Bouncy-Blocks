@@ -30,7 +30,7 @@ public class BounceListener implements Listener {
         Player player = event.getPlayer();
         Block blockBelow = event.getTo().getBlock().getRelative(BlockFace.DOWN);
 
-        String configBlockName = plugin.getConfig().getString("Block", "SLIME_BLOCK").toUpperCase();
+        String configBlockName = plugin.getConfig().getString("block", "SLIME_BLOCK").toUpperCase();
         Material targetMaterial = Material.matchMaterial(configBlockName);
 
         if (targetMaterial != null && blockBelow.getType() == targetMaterial) {
