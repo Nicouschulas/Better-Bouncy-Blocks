@@ -1,0 +1,31 @@
+name: BetterBouncyBlocks
+version: '${project.version}'
+main: de.nicouschulas.betterbouncyblocks.BetterBouncyBlocks
+api-version: '1.21'
+author: Nicouschulas
+description: A lightweight trampoline plugin which supports custom blocks, adjustable bounce height and integrated fall protection!
+
+commands:
+  bbb:
+    description: Manages the Better Bouncy Blocks commands (reload).
+    usage: "Usage: /bbb reload"
+    permission: betterbouncyblocks.admin
+    permission-message: "&cYou don't have permission to use this command."
+    aliases:
+      - betterbouncyblocks
+
+permissions:
+  betterbouncyblocks.admin:
+    description: Parent permission for all administrative commands and usage.
+    default: op
+    children:
+      betterbouncyblocks.reload: true
+      betterbouncyblocks.update: true
+
+  betterbouncyblocks.reload:
+    description: Reloads the Better Bouncy Blocks plugin configuration.
+    default: op
+
+  betterbouncyblocks.update:
+    description: Allows a player to receive in-game update notifications.
+    default: op
