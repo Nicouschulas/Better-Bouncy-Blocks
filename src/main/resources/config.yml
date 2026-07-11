@@ -21,6 +21,21 @@ velocity-multiplier: 2.0
 no-damage-ticks: 0
 
 
+# --- worldguard configuration ---
+
+worldguard:
+  # Set to true to restrict trampolines to specific WorldGuard regions.
+  # Requires WorldGuard to be installed on the server.
+  enabled: false
+
+  # List the region IDs where Better Bouncy Blocks should work.
+  # ALWAYS use lowercase letters for region names here!
+  regions:
+    - "spawn"
+    - "lobby"
+    - "trampoline_arena"
+
+
 # --- update checker configuration ---
 
 update-checker:

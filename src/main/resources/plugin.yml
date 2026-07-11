@@ -4,6 +4,7 @@ main: de.nicouschulas.betterbouncyblocks.BetterBouncyBlocks
 api-version: '1.21'
 author: Nicouschulas
 description: A lightweight trampoline plugin which supports custom blocks, adjustable bounce height and integrated fall protection!
+softdepend: [WorldGuard]
 
 commands:
   bbb:
