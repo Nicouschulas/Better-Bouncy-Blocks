@@ -1,17 +1,5 @@
 package de.nicouschulas.betterbouncyblocks;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bstats.bukkit.Metrics;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -20,11 +8,27 @@ import java.net.URL;
 import java.util.Objects;
 import java.util.Scanner;
 import java.util.logging.Level;
+import java.util.regex.Pattern;
+
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bstats.bukkit.Metrics;
+
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public final class BetterBouncyBlocks extends JavaPlugin implements Listener {
 
     private Component chatPrefix;
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
+
+    private static final Pattern HEX_PATTERN = Pattern.compile("&#([A-Fa-f0-9]{6})");
 
     private String latestVersion = null;
 
@@ -98,7 +102,7 @@ public final class BetterBouncyBlocks extends JavaPlugin implements Listener {
                 .replace("&m", "<strikethrough>")
                 .replace("&k", "<obfuscated>");
 
-        prepared = prepared.replaceAll("&#([A-Fa-f0-9]{6})", "<#$1>");
+        prepared = HEX_PATTERN.matcher(prepared).replaceAll("<#$1>");
 
         return miniMessage.deserialize(prepared);
     }
