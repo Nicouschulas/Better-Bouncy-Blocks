@@ -3,7 +3,7 @@ version: '${project.version}'
 main: de.nicouschulas.betterbouncyblocks.BetterBouncyBlocks
 api-version: '1.21'
 author: Nicouschulas
-description: A lightweight trampoline plugin which supports custom blocks, adjustable bounce height and integrated fall protection!
+description: A lightweight trampoline plugin which supports custom blocks, adjustable bounce height, integrated fall protection and worldguard region support!
 softdepend: [WorldGuard]
 
 commands:
@@ -22,6 +22,11 @@ permissions:
     children:
       betterbouncyblocks.reload: true
       betterbouncyblocks.update: true
+      betterbouncyblocks.use: true
+
+  betterbouncyblocks.use:
+    description: Allows players to use the bouncy blocks.
+    default: true
 
   betterbouncyblocks.reload:
     description: Reloads the Better Bouncy Blocks plugin configuration.
