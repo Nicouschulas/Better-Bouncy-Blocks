@@ -30,6 +30,8 @@ Spigot: https://www.spigotmc.org/resources/bbb-better-bouncy-blocks.134059/
 ## ️**🛡️ Commands & Permissions:**
 `/bbb reload` | `betterbouncyblocks.reload`
 
+`betterbouncyblocks.use` (allows the use of the bounce block (default true))
+
 `betterbouncyblocks.update` (for in-game update notifications)
 
 `betterbouncyblocks.admin` (parent permission for all permissions)
