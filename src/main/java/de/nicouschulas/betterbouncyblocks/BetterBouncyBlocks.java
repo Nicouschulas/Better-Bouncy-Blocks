@@ -57,6 +57,7 @@ public final class BetterBouncyBlocks extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
+        getLogger().info("BetterBouncyBlocks is shutting down...");
         getLogger().info("BetterBouncyBlocks shutdown successfully!");
     }
 
