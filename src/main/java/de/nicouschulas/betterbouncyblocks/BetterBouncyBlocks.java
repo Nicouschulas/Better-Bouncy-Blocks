@@ -1,9 +1,7 @@
 package de.nicouschulas.betterbouncyblocks;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Objects;
 import java.util.Scanner;
@@ -27,6 +25,7 @@ public final class BetterBouncyBlocks extends JavaPlugin implements Listener {
 
     private Component chatPrefix;
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
+    private BounceListener bounceListener;
 
     private static final Pattern HEX_PATTERN = Pattern.compile("&#([A-Fa-f0-9]{6})");
 
@@ -37,10 +36,12 @@ public final class BetterBouncyBlocks extends JavaPlugin implements Listener {
         getLogger().info("BetterBouncyBlocks is starting...");
 
         saveDefaultConfig();
+
+        this.bounceListener = new BounceListener(this);
         reloadConfig();
 
         getServer().getPluginManager().registerEvents(this, this);
-        getServer().getPluginManager().registerEvents(new BounceListener(this), this);
+        getServer().getPluginManager().registerEvents(bounceListener, this);
 
         CommandHandler commandHandler = new CommandHandler(this);
         Objects.requireNonNull(getCommand("bbb")).setExecutor(commandHandler);
@@ -63,6 +64,9 @@ public final class BetterBouncyBlocks extends JavaPlugin implements Listener {
     public void reloadConfig() {
         super.reloadConfig();
         loadPrefix();
+        if (bounceListener != null) {
+            bounceListener.reloadValues();
+        }
     }
 
     private void loadPrefix() {
@@ -138,8 +142,8 @@ public final class BetterBouncyBlocks extends JavaPlugin implements Listener {
                         }
                     }
                 }
-            } catch (IOException | URISyntaxException e) {
-                getLogger().log(Level.FINER, "Update checker failed to connect to the server!", e);
+            } catch (Exception e) {
+                getLogger().log(Level.FINER, "Update checker failed to process the response!", e);
             }
         });
     }
