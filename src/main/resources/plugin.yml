@@ -22,6 +22,8 @@ permissions:
       betterbouncyblocks.give: true
       betterbouncyblocks.update: true
       betterbouncyblocks.use: true
+      betterbouncyblocks.use.consumable: true
+      betterbouncyblocks.buy: true
 
   betterbouncyblocks.use:
     description: Allows players to use standard bouncy blocks.

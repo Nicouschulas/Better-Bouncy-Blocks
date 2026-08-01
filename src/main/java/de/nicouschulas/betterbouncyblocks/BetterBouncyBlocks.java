@@ -5,8 +5,12 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Objects;
 import java.util.Scanner;
-import java.util.logging.Level;
 import java.util.regex.Pattern;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -31,7 +35,8 @@ public final class BetterBouncyBlocks extends JavaPlugin implements Listener {
     private Economy economy = null;
 
     private static final Pattern HEX_PATTERN = Pattern.compile("&#([A-Fa-f0-9]{6})");
-    private String latestVersion = null;
+    // volatile: written by the async update check, read by the main thread on player join
+    private volatile String latestVersion = null;
 
     @Override
     public void onEnable() {
@@ -154,25 +159,33 @@ public final class BetterBouncyBlocks extends JavaPlugin implements Listener {
                 try (InputStream inputStream = url.openStream(); Scanner scanner = new Scanner(inputStream)) {
                     String json = scanner.useDelimiter("\\A").next();
 
-                    if (json.contains("\"version_number\":\"")) {
-                        String fetchedLatestVersion = json.split("\"version_number\":\"")[1].split("\"")[0];
+                    // Modrinth returns versions sorted newest first; pick the newest release,
+                    // so snapshots or betas are never suggested as an update.
+                    String fetchedLatestVersion = null;
+                    JsonArray versions = JsonParser.parseString(json).getAsJsonArray();
+                    for (JsonElement element : versions) {
+                        JsonObject version = element.getAsJsonObject();
+                        if ("release".equals(version.get("version_type").getAsString())) {
+                            fetchedLatestVersion = version.get("version_number").getAsString();
+                            break;
+                        }
+                    }
 
-                        if (!currentVersion.equals(fetchedLatestVersion)) {
-                            this.latestVersion = fetchedLatestVersion;
+                    if (fetchedLatestVersion != null && !currentVersion.equals(fetchedLatestVersion)) {
+                        this.latestVersion = fetchedLatestVersion;
 
-                            if (notifyMethod.equalsIgnoreCase("console") || notifyMethod.equalsIgnoreCase("both")) {
-                                getLogger().warning("-----------------------------------------------------");
-                                getLogger().warning("A new version of BetterBouncyBlocks is available!");
-                                getLogger().warning("Current version: " + currentVersion);
-                                getLogger().warning("Latest version: " + this.latestVersion);
-                                getLogger().warning("Download it here: https://modrinth.com/project/betterbouncyblocks/versions");
-                                getLogger().warning("-----------------------------------------------------");
-                            }
+                        if (notifyMethod.equalsIgnoreCase("console") || notifyMethod.equalsIgnoreCase("both")) {
+                            getLogger().warning("-----------------------------------------------------");
+                            getLogger().warning("A new version of BetterBouncyBlocks is available!");
+                            getLogger().warning("Current version: " + currentVersion);
+                            getLogger().warning("Latest version: " + this.latestVersion);
+                            getLogger().warning("Download it here: https://modrinth.com/project/betterbouncyblocks/versions");
+                            getLogger().warning("-----------------------------------------------------");
                         }
                     }
                 }
             } catch (Exception e) {
-                getLogger().log(Level.FINER, "Update checker failed to process the response!", e);
+                getLogger().warning("Update checker failed to process the response: " + e.getMessage());
             }
         });
     }
