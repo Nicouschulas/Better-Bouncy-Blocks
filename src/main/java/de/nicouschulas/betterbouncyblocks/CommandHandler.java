@@ -34,49 +34,45 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
         String subCommand = args[0].toLowerCase();
 
         switch (subCommand) {
-            case "reload":
-                return handleReload(sender);
-            case "give":
-                return handleGive(sender, args);
-            case "buy":
-                return handleBuy(sender, args);
-            default:
-                sender.sendMessage(plugin.getFormattedMessage("command-usage"));
-                return true;
+            case "reload" -> handleReload(sender);
+            case "give" -> handleGive(sender, args);
+            case "buy" -> handleBuy(sender, args);
+            default -> sender.sendMessage(plugin.getFormattedMessage("command-usage"));
         }
+
+        return true;
     }
 
-    private boolean handleReload(CommandSender sender) {
+    private void handleReload(CommandSender sender) {
         if (!sender.hasPermission("betterbouncyblocks.reload")) {
             sender.sendMessage(plugin.getFormattedMessage("no-permission"));
-            return true;
+            return;
         }
 
         plugin.reloadConfig();
         sender.sendMessage(plugin.getFormattedMessage("reload-success"));
-        return true;
     }
 
-    private boolean handleGive(CommandSender sender, String[] args) {
+    private void handleGive(CommandSender sender, String[] args) {
         if (!sender.hasPermission("betterbouncyblocks.give")) {
             sender.sendMessage(plugin.getFormattedMessage("no-permission"));
-            return true;
+            return;
         }
 
         if (!plugin.getConfig().getBoolean("consumable-block.enabled", true)) {
             sender.sendMessage(plugin.getFormattedMessage("consumable-disabled"));
-            return true;
+            return;
         }
 
         if (args.length < 2) {
             sender.sendMessage(plugin.parse("&cUsage: &7/bbb give <player> [amount]"));
-            return true;
+            return;
         }
 
         Player target = Bukkit.getPlayer(args[1]);
         if (target == null) {
             sender.sendMessage(plugin.getFormattedMessage("player-not-found"));
-            return true;
+            return;
         }
 
         int amount = 1;
@@ -86,14 +82,14 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
                 if (amount <= 0) throw new NumberFormatException();
             } catch (NumberFormatException e) {
                 sender.sendMessage(plugin.getFormattedMessage("invalid-amount"));
-                return true;
+                return;
             }
         }
 
         Material material = getConsumableMaterial();
         if (material == null) {
             sender.sendMessage(plugin.parse("&cInvalid consumable block material in config.yml!"));
-            return true;
+            return;
         }
 
         ItemStack items = new ItemStack(material, amount);
@@ -116,29 +112,27 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
             }
             target.sendMessage(plugin.getFormattedMessage("inventory-full"));
         }
-
-        return true;
     }
 
-    private boolean handleBuy(CommandSender sender, String[] args) {
+    private void handleBuy(CommandSender sender, String[] args) {
         if (!(sender instanceof Player player)) {
             sender.sendMessage(plugin.parse("&cThis command can only be executed by players!"));
-            return true;
+            return;
         }
 
         if (!player.hasPermission("betterbouncyblocks.buy")) {
             player.sendMessage(plugin.getFormattedMessage("no-permission"));
-            return true;
+            return;
         }
 
         if (!plugin.getConfig().getBoolean("consumable-block.enabled", false)) {
             player.sendMessage(plugin.getFormattedMessage("consumable-disabled"));
-            return true;
+            return;
         }
 
         if (!plugin.isEconomyAvailable()) {
             player.sendMessage(plugin.getFormattedMessage("vault-disabled"));
-            return true;
+            return;
         }
 
         int amount = 1;
@@ -148,7 +142,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
                 if (amount <= 0) throw new NumberFormatException();
             } catch (NumberFormatException e) {
                 player.sendMessage(plugin.getFormattedMessage("invalid-amount"));
-                return true;
+                return;
             }
         }
 
@@ -159,18 +153,18 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
             String rawMsg = plugin.getConfig().getString("messages.not-enough-money", "")
                     .replace("%price%", String.format("%.2f", totalPrice));
             player.sendMessage(plugin.parse(plugin.getConfig().getString("prefix", "") + rawMsg));
-            return true;
+            return;
         }
 
         Material material = getConsumableMaterial();
         if (material == null) {
             player.sendMessage(plugin.parse("&cInvalid consumable block material in config.yml!"));
-            return true;
+            return;
         }
 
         if (isInventoryFull(player, material)) {
             player.sendMessage(plugin.getFormattedMessage("inventory-full"));
-            return true;
+            return;
         }
 
         plugin.getEconomy().withdrawPlayer(player, totalPrice);
@@ -190,8 +184,6 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
             }
             player.sendMessage(plugin.getFormattedMessage("inventory-full"));
         }
-
-        return true;
     }
 
     private boolean isInventoryFull(Player player, Material material) {

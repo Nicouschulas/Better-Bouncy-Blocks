@@ -86,7 +86,7 @@ public class BounceListener implements Listener {
 
         if (targetMaterial != null && blockType == targetMaterial) {
             if (!player.hasPermission("betterbouncyblocks.use")) return;
-            if (!isInAllowedRegion(blockBelow.getLocation(), wgEnabled, allowedRegions)) return;
+            if (isOutsideAllowedRegion(blockBelow.getLocation(), wgEnabled, allowedRegions)) return;
 
             applyBounce(player, velocityMultiplier, noDamageTicks);
             return;
@@ -94,7 +94,7 @@ public class BounceListener implements Listener {
 
         if (consumableEnabled && consumableMaterial != null && blockType == consumableMaterial) {
             if (!player.hasPermission("betterbouncyblocks.use.consumable")) return;
-            if (!isInAllowedRegion(blockBelow.getLocation(), consumableWgEnabled, consumableAllowedRegions)) return;
+            if (isOutsideAllowedRegion(blockBelow.getLocation(), consumableWgEnabled, consumableAllowedRegions)) return;
 
             applyBounce(player, consumableVelocityMultiplier, consumableNoDamageTicks);
             blockBelow.setType(Material.AIR);
@@ -118,7 +118,7 @@ public class BounceListener implements Listener {
 
         if (targetMaterial != null && blockType == targetMaterial) {
             if (!player.hasPermission("betterbouncyblocks.use")) return;
-            if (!isInAllowedRegion(placedBlock.getLocation(), wgEnabled, allowedRegions)) return;
+            if (isOutsideAllowedRegion(placedBlock.getLocation(), wgEnabled, allowedRegions)) return;
 
             applyBounce(player, velocityMultiplier, noDamageTicks);
             return;
@@ -126,7 +126,7 @@ public class BounceListener implements Listener {
 
         if (consumableEnabled && consumableMaterial != null && blockType == consumableMaterial) {
             if (!player.hasPermission("betterbouncyblocks.use.consumable")) return;
-            if (!isInAllowedRegion(placedBlock.getLocation(), consumableWgEnabled, consumableAllowedRegions)) return;
+            if (isOutsideAllowedRegion(placedBlock.getLocation(), consumableWgEnabled, consumableAllowedRegions)) return;
 
             applyBounce(player, consumableVelocityMultiplier, consumableNoDamageTicks);
             placedBlock.setType(Material.AIR);
@@ -142,13 +142,13 @@ public class BounceListener implements Listener {
         }
     }
 
-    private boolean isInAllowedRegion(Location loc, boolean regionCheckEnabled, Set<String> regions) {
+    private boolean isOutsideAllowedRegion(Location loc, boolean regionCheckEnabled, Set<String> regions) {
         if (!isWorldGuardPresent || !regionCheckEnabled) {
-            return true;
+            return false;
         }
 
         if (regions.isEmpty()) {
-            return false;
+            return true;
         }
 
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
@@ -157,11 +157,11 @@ public class BounceListener implements Listener {
 
         for (ProtectedRegion region : set) {
             if (regions.contains(region.getId().toLowerCase())) {
-                return true;
+                return false;
             }
         }
 
-        return false;
+        return true;
     }
 
     @EventHandler
