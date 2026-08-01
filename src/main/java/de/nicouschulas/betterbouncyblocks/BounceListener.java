@@ -30,7 +30,7 @@ import org.bukkit.util.Vector;
 public class BounceListener implements Listener {
 
     private final BetterBouncyBlocks plugin;
-    private final Map<UUID, Long> fallDamageImmunity = new HashMap<>();
+    private final Map<UUID, Integer> fallDamageImmunity = new HashMap<>();
     private final boolean isWorldGuardPresent;
 
     private Material targetMaterial;
@@ -137,8 +137,9 @@ public class BounceListener implements Listener {
         player.setVelocity(new Vector(player.getVelocity().getX(), multiplier, player.getVelocity().getZ()));
 
         if (damageTicks > 0) {
-            long immunityTimeEnd = System.currentTimeMillis() + (damageTicks * 50L);
-            fallDamageImmunity.put(player.getUniqueId(), immunityTimeEnd);
+            // Use server ticks instead of wall-clock time, so the immunity
+            // window does not expire mid-air when the server is lagging.
+            fallDamageImmunity.put(player.getUniqueId(), Bukkit.getCurrentTick() + damageTicks);
         }
     }
 
@@ -169,9 +170,9 @@ public class BounceListener implements Listener {
         if (!(event.getEntity() instanceof Player player)) return;
 
         if (event.getCause() == EntityDamageEvent.DamageCause.FALL) {
-            Long immunityTimeEnd = fallDamageImmunity.get(player.getUniqueId());
-            if (immunityTimeEnd != null) {
-                if (System.currentTimeMillis() < immunityTimeEnd) {
+            Integer immunityEndTick = fallDamageImmunity.get(player.getUniqueId());
+            if (immunityEndTick != null) {
+                if (Bukkit.getCurrentTick() < immunityEndTick) {
                     event.setCancelled(true);
                 } else {
                     fallDamageImmunity.remove(player.getUniqueId());
