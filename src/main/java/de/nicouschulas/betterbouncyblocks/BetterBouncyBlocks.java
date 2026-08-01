@@ -12,6 +12,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
 
 import org.bukkit.Bukkit;
@@ -19,6 +20,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class BetterBouncyBlocks extends JavaPlugin implements Listener {
@@ -26,9 +28,9 @@ public final class BetterBouncyBlocks extends JavaPlugin implements Listener {
     private Component chatPrefix;
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
     private BounceListener bounceListener;
+    private Economy economy = null;
 
     private static final Pattern HEX_PATTERN = Pattern.compile("&#([A-Fa-f0-9]{6})");
-
     private String latestVersion = null;
 
     @Override
@@ -36,6 +38,8 @@ public final class BetterBouncyBlocks extends JavaPlugin implements Listener {
         getLogger().info("BetterBouncyBlocks is starting...");
 
         saveDefaultConfig();
+
+        setupEconomy();
 
         this.bounceListener = new BounceListener(this);
         reloadConfig();
@@ -59,6 +63,30 @@ public final class BetterBouncyBlocks extends JavaPlugin implements Listener {
     public void onDisable() {
         getLogger().info("BetterBouncyBlocks is shutting down...");
         getLogger().info("BetterBouncyBlocks shutdown successfully!");
+    }
+
+    private void setupEconomy() {
+        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+            getLogger().info("Vault not found. Economy features (/bbb buy) will be disabled.");
+            return;
+        }
+
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) {
+            getLogger().info("No economy provider found. Economy features (/bbb buy) will be disabled.");
+            return;
+        }
+
+        this.economy = rsp.getProvider();
+        getLogger().info("Vault economy hooked successfully!");
+    }
+
+    public Economy getEconomy() {
+        return this.economy;
+    }
+
+    public boolean isEconomyAvailable() {
+        return this.economy != null;
     }
 
     @Override

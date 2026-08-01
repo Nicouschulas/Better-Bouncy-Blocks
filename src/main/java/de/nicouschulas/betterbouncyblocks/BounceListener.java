@@ -21,6 +21,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -38,6 +39,13 @@ public class BounceListener implements Listener {
     private boolean wgEnabled;
     private final Set<String> allowedRegions = new HashSet<>();
 
+    private boolean consumableEnabled;
+    private Material consumableMaterial;
+    private double consumableVelocityMultiplier;
+    private int consumableNoDamageTicks;
+    private boolean consumableWgEnabled;
+    private final Set<String> consumableAllowedRegions = new HashSet<>();
+
     public BounceListener(BetterBouncyBlocks plugin) {
         this.plugin = plugin;
         this.isWorldGuardPresent = Bukkit.getPluginManager().getPlugin("WorldGuard") != null;
@@ -47,47 +55,99 @@ public class BounceListener implements Listener {
         String configBlockName = plugin.getConfig().getString("block", "SLIME_BLOCK").toUpperCase();
         this.targetMaterial = Material.matchMaterial(configBlockName);
         this.velocityMultiplier = plugin.getConfig().getDouble("velocity-multiplier", 2.0);
-        this.noDamageTicks = plugin.getConfig().getInt("no-damage-ticks", 500);
+        this.noDamageTicks = plugin.getConfig().getInt("no-damage-ticks", 0);
         this.wgEnabled = plugin.getConfig().getBoolean("worldguard.enabled", false);
 
         this.allowedRegions.clear();
         for (String region : plugin.getConfig().getStringList("worldguard.regions")) {
             this.allowedRegions.add(region.toLowerCase());
         }
+
+        this.consumableEnabled = plugin.getConfig().getBoolean("consumable-block.enabled", true);
+        String consumableBlockName = plugin.getConfig().getString("consumable-block.block", "MAGENTA_GLAZED_TERRACOTTA").toUpperCase();
+        this.consumableMaterial = Material.matchMaterial(consumableBlockName);
+        this.consumableVelocityMultiplier = plugin.getConfig().getDouble("consumable-block.velocity-multiplier", 1.5);
+        this.consumableNoDamageTicks = plugin.getConfig().getInt("consumable-block.no-damage-ticks", 40);
+        this.consumableWgEnabled = plugin.getConfig().getBoolean("consumable-block.worldguard.enabled", false);
+
+        this.consumableAllowedRegions.clear();
+        for (String region : plugin.getConfig().getStringList("consumable-block.worldguard.regions")) {
+            this.consumableAllowedRegions.add(region.toLowerCase());
+        }
     }
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         if (!event.hasChangedBlock()) return;
-        if (targetMaterial == null) return;
 
         Player player = event.getPlayer();
+        Block blockBelow = event.getTo().getBlock().getRelative(BlockFace.DOWN);
+        Material blockType = blockBelow.getType();
 
-        if (!player.hasPermission("betterbouncyblocks.use")) {
+        if (targetMaterial != null && blockType == targetMaterial) {
+            if (!player.hasPermission("betterbouncyblocks.use")) return;
+            if (!isInAllowedRegion(blockBelow.getLocation(), wgEnabled, allowedRegions)) return;
+
+            applyBounce(player, velocityMultiplier, noDamageTicks);
             return;
         }
 
-        Block blockBelow = event.getTo().getBlock().getRelative(BlockFace.DOWN);
+        if (consumableEnabled && consumableMaterial != null && blockType == consumableMaterial) {
+            if (!player.hasPermission("betterbouncyblocks.use.consumable")) return;
+            if (!isInAllowedRegion(blockBelow.getLocation(), consumableWgEnabled, consumableAllowedRegions)) return;
 
-        if (blockBelow.getType() == targetMaterial) {
+            applyBounce(player, consumableVelocityMultiplier, consumableNoDamageTicks);
+            blockBelow.setType(Material.AIR);
+        }
+    }
 
-            if (!isInAllowedRegion(blockBelow.getLocation())) {
-                return;
-            }
+    @EventHandler
+    public void onBlockPlace(BlockPlaceEvent event) {
+        Player player = event.getPlayer();
+        Block placedBlock = event.getBlockPlaced();
 
-            player.setVelocity(new Vector(player.getVelocity().getX(), velocityMultiplier, player.getVelocity().getZ()));
+        Location playerLoc = player.getLocation();
+        Block blockBelow = playerLoc.getBlock().getRelative(BlockFace.DOWN);
+        Block blockAtFeet = playerLoc.getBlock();
 
-            long immunityTimeEnd = System.currentTimeMillis() + (noDamageTicks * 50L);
+        if (!placedBlock.equals(blockBelow) && !placedBlock.equals(blockAtFeet)) {
+            return;
+        }
+
+        Material blockType = placedBlock.getType();
+
+        if (targetMaterial != null && blockType == targetMaterial) {
+            if (!player.hasPermission("betterbouncyblocks.use")) return;
+            if (!isInAllowedRegion(placedBlock.getLocation(), wgEnabled, allowedRegions)) return;
+
+            applyBounce(player, velocityMultiplier, noDamageTicks);
+            return;
+        }
+
+        if (consumableEnabled && consumableMaterial != null && blockType == consumableMaterial) {
+            if (!player.hasPermission("betterbouncyblocks.use.consumable")) return;
+            if (!isInAllowedRegion(placedBlock.getLocation(), consumableWgEnabled, consumableAllowedRegions)) return;
+
+            applyBounce(player, consumableVelocityMultiplier, consumableNoDamageTicks);
+            placedBlock.setType(Material.AIR);
+        }
+    }
+
+    private void applyBounce(Player player, double multiplier, int damageTicks) {
+        player.setVelocity(new Vector(player.getVelocity().getX(), multiplier, player.getVelocity().getZ()));
+
+        if (damageTicks > 0) {
+            long immunityTimeEnd = System.currentTimeMillis() + (damageTicks * 50L);
             fallDamageImmunity.put(player.getUniqueId(), immunityTimeEnd);
         }
     }
 
-    private boolean isInAllowedRegion(Location loc) {
-        if (!isWorldGuardPresent || !wgEnabled) {
+    private boolean isInAllowedRegion(Location loc, boolean regionCheckEnabled, Set<String> regions) {
+        if (!isWorldGuardPresent || !regionCheckEnabled) {
             return true;
         }
 
-        if (allowedRegions.isEmpty()) {
+        if (regions.isEmpty()) {
             return false;
         }
 
@@ -96,7 +156,7 @@ public class BounceListener implements Listener {
         ApplicableRegionSet set = query.getApplicableRegions(BukkitAdapter.adapt(loc));
 
         for (ProtectedRegion region : set) {
-            if (allowedRegions.contains(region.getId().toLowerCase())) {
+            if (regions.contains(region.getId().toLowerCase())) {
                 return true;
             }
         }
