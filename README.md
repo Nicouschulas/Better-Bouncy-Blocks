@@ -3,7 +3,7 @@
 ![Curseforge Downloads](https://img.shields.io/curseforge/dt/1505605?style=for-the-badge&logo=curseforge&color=D02F2F&link=https://www.curseforge.com/minecraft/bukkit-plugins/chc&link=https://www.curseforge.com/minecraft/bukkit-plugins/chc) ![Modrinth Downloads](https://img.shields.io/modrinth/dt/wUsXrkAK?style=for-the-badge&logo=modrinth&color=D02F2F&link=https%3A%2F%2Fmodrinth.com%2Fplugin%2Fchc&link=https%3A%2F%2Fmodrinth.com%2Fplugin%2Fchc)  ![Spiget Downloads](https://img.shields.io/spiget/downloads/134059?style=for-the-badge&logo=spigotmc&color=D02F2F&link=https%3A%2F%2Fwww.spigotmc.org%2Fresources%2Fchc-custom-hit-command.127038%2F&link=https%3A%2F%2Fwww.spigotmc.org%2Fresources%2Fchc-custom-hit-command.127038%2F) ![Discord](https://img.shields.io/discord/866268252245590016?style=for-the-badge&logo=discord&color=D02F2F&link=https%3A%2F%2Fdiscord.com%2Finvite%2FZ3rrqYSpUE&link=https%3A%2F%2Fdiscord.com%2Finvite%2FZ3rrqYSpUE)
 
 ## **❓ What is BBB?**
-**BetterBouncyBlocks** is designed to bring dynamic **trampoline mechanics** to your Minecraft server! With **BBB**, you can choose **any** material as a **powerful launchpad**. This **lightweight** and **highly customizable** plugin is built for Paper 1.21, ensuring **fast performance** and **seamless integration**.
+**BetterBouncyBlocks** brings dynamic **trampoline mechanics** to your Minecraft server! With **BBB**, you can choose **any block material** into a **powerful launchpad** or set up **consumable single-use trampolines**. This **lightweight** and **highly customizable** plugin is built for Paper 1.21, offering **excellent performance**, **seamless integration** and **high stability**.
 
 ## **🌟 Key Features:**
 
