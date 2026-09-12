@@ -67,7 +67,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
         }
 
         if (args.length < 2) {
-            sender.sendMessage(plugin.parse("&cUsage: &7/bbb give <player> [amount]"));
+            sender.sendMessage(plugin.getFormattedMessage("give-usage"));
             return;
         }
 
@@ -171,7 +171,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
 
         EconomyResponse response = plugin.getEconomy().withdrawPlayer(player, totalPrice);
         if (!response.transactionSuccess()) {
-            player.sendMessage(plugin.parse("&cThe transaction failed, you have not been charged!"));
+            player.sendMessage(plugin.getFormattedMessage("transaction-failed"));
             return;
         }
 
