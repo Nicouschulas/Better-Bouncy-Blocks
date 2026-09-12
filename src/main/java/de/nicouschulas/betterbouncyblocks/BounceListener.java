@@ -137,8 +137,6 @@ public class BounceListener implements Listener {
         player.setVelocity(new Vector(player.getVelocity().getX(), multiplier, player.getVelocity().getZ()));
 
         if (damageTicks > 0) {
-            // Use server ticks instead of wall-clock time, so the immunity
-            // window does not expire mid-air when the server is lagging.
             fallDamageImmunity.put(player.getUniqueId(), Bukkit.getCurrentTick() + damageTicks);
         }
     }

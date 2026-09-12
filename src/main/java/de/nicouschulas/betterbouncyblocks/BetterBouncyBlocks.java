@@ -35,7 +35,6 @@ public final class BetterBouncyBlocks extends JavaPlugin implements Listener {
     private Economy economy = null;
 
     private static final Pattern HEX_PATTERN = Pattern.compile("&#([A-Fa-f0-9]{6})");
-    // volatile: written by the async update check, read by the main thread on player join
     private volatile String latestVersion = null;
 
     @Override
@@ -159,8 +158,6 @@ public final class BetterBouncyBlocks extends JavaPlugin implements Listener {
                 try (InputStream inputStream = url.openStream(); Scanner scanner = new Scanner(inputStream)) {
                     String json = scanner.useDelimiter("\\A").next();
 
-                    // Modrinth returns versions sorted newest first; pick the newest release,
-                    // so snapshots or betas are never suggested as an update.
                     String fetchedLatestVersion = null;
                     JsonArray versions = JsonParser.parseString(json).getAsJsonArray();
                     for (JsonElement element : versions) {
