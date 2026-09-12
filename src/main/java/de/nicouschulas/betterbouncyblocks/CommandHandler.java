@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import net.milkbowl.vault.economy.EconomyResponse;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -167,7 +169,11 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
             return;
         }
 
-        plugin.getEconomy().withdrawPlayer(player, totalPrice);
+        EconomyResponse response = plugin.getEconomy().withdrawPlayer(player, totalPrice);
+        if (!response.transactionSuccess()) {
+            player.sendMessage(plugin.parse("&cThe transaction failed, you have not been charged!"));
+            return;
+        }
 
         ItemStack items = new ItemStack(material, amount);
         Map<Integer, ItemStack> leftover = player.getInventory().addItem(items);
