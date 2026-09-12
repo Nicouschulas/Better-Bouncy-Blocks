@@ -6,7 +6,7 @@
 
     <groupId>de.nicouschulas</groupId>
     <artifactId>BetterBouncyBlocks</artifactId>
-    <version>1.5</version>
+    <version>1.5.1</version>
     <packaging>jar</packaging>
 
     <name>betterbouncyblocks</name>
