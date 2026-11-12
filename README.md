@@ -7,24 +7,21 @@
 
 ## **🌟 Key Features:**
 
-🔧 **Permanent Bouncy Blocks**: Easily define which block material acts as a permament trampoline
+**Permanent Bouncy Blocks**: Easily define which block material acts as a permament trampoline
 
-🍬 **Consumable Bouncy Blocks**: Set up one-time use blocks that disappear immediately after launching a player
+**Consumable Bouncy Blocks**: Set up one-time use blocks that disappear immediately after launching a player
 
-💰 **Economy Integration**: Allow players to purchase consumable blocks in-game with `/bbb buy` or easily hand out consumable blocks to players using `/bbb give`
+**Economy Integration**: Allow players to purchase consumable blocks in-game with `/bbb buy` or easily hand out consumable blocks to players using `/bbb give`
 
-🚀 **Customizable Launch Height**: Fine-tune exactly how high players should be launched
+**Customizable Launch Height**: Fine-tune exactly how high players should be launched
 
-🛡️ **Integrated Fall Damage Protection**: BetterBouncyBlocks automatically protects players from fall damage after a bounce for a customizable duration
+**Integrated Fall Damage Protection**: BetterBouncyBlocks automatically protects players from fall damage after a bounce for a customizable duration
 
-🗺️ **WorldGuard Region Support**: Restrict trampoline mechanics exclusively to specific WorldGuard regions (e.g., spawn, lobby...)
+**WorldGuard Region Support**: Restrict trampoline mechanics exclusively to specific WorldGuard regions (e.g., spawn, lobby...)
 
-💬 **Customizable Messages**: Tailor nearly all plugin messages to match your server's style. You can use both modern MiniMessage tags and legacy color codes at the same time!
+**Customizable Messages**: Tailor nearly all plugin messages to match your server's style. You can use both modern MiniMessage tags and legacy color codes at the same time!
 
-🔔 **Update Notifications**: An automatic update checker can be configured to notify you in the console or directly in-game (or both) when a new version is available. It can be easily toggled on/off in the configuration
-
-
-**So what are you waiting for? Get Better Bouncy Blocks now and bring a new layer of excitement to your server!**
+**Update Notifications**: An automatic update checker can be configured to notify you in the console or directly in-game (or both) when a new version is available. It can be easily toggled on/off in the configuration
 
 ## **📥 Downloads:**
 Modrinth: https://modrinth.com/plugin/betterbouncyblocks
